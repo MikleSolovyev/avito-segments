@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INT PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS segments (
+    id SERIAL PRIMARY KEY,
+    slug VARCHAR UNIQUE NOT NULL CHECK (LENGTH(slug) > 0),
+    percent INT NOT NULL CHECK (percent >= 0 AND percent <= 100)
+);
+
+CREATE TABLE IF NOT EXISTS users_segments (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),
+    slug VARCHAR REFERENCES segments(slug) ON DELETE CASCADE,
+    expired_at TIMESTAMPTZ DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS history (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    slug VARCHAR NOT NULL,
+    is_deleted BOOLEAN NOT NULL,
+    executed_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

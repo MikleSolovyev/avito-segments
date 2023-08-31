@@ -1,0 +1,174 @@
+basePath: /api/v1
+definitions:
+  echo.HTTPError:
+    properties:
+      message: {}
+    type: object
+  internal_controller_http_v1.HistoryRoutes:
+    type: object
+  internal_controller_http_v1.SegmentRoutes:
+    type: object
+  internal_controller_http_v1.UserRoutes:
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Mikhail Solovyev
+  description: This service provides adding users to segments, removing them from
+    segments, and saving these actions in the history.
+  title: Avito user segments service
+  version: "1.0"
+paths:
+  /api/v1/history:
+    get:
+      consumes:
+      - application/json
+      description: Get CSV report in a given period
+      parameters:
+      - description: from to period
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/internal_controller_http_v1.HistoryRoutes'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get CSV report
+      tags:
+      - history
+  /api/v1/segment:
+    delete:
+      consumes:
+      - application/json
+      description: Delete segment by slug
+      parameters:
+      - description: slug
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/internal_controller_http_v1.SegmentRoutes'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_v1.SegmentRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Delete segment
+      tags:
+      - segment
+    post:
+      consumes:
+      - application/json
+      description: Create segment with slug and percent
+      parameters:
+      - description: slug and percent
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/internal_controller_http_v1.SegmentRoutes'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_v1.SegmentRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Create segment
+      tags:
+      - segment
+  /api/v1/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get all active user segments
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_v1.UserRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get user segments
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Add user to new segments and delete from current
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: segments to update
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/internal_controller_http_v1.UserRoutes'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_v1.UserRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Update user segments
+      tags:
+      - user
+swagger: "2.0"

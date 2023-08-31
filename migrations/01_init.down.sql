@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS history;
+DROP TABLE IF EXISTS users_segments;
+DROP TABLE IF EXISTS segments;
+DROP TABLE IF EXISTS users;

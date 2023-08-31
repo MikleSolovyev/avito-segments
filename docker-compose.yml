@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: postgres
+    hostname: postgres
+    image: postgres
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  migrate:
+    container_name: migrate
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    env_file:
+      - .env
+    command: [ "-path", "/migrations", "-database",  "${PG_URL}", "up" ]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    container_name: app
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - migrate
+
+volumes:
+  pg-data:
